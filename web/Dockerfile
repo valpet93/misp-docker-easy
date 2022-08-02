@@ -9,6 +9,8 @@ RUN apt update && \
     apt install -y software-properties-common && \
     apt install -y mysql-server sudo wget curl gcc git gnupg-agent locales tzdata
 
+RUN /etc/init.d/mysql start
+
 RUN apt install -y language-pack-en-base && \
     locale-gen en_US.UTF-8
 ENV LANG=en_US.UTF-8
@@ -24,6 +26,8 @@ RUN echo "ALL ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 USER misp
 
 RUN bash INSTALL.sh -A -u
+
+RUN /var/www/MISP/app/Console/cake Admin setSetting MISP.baseurl https://192.168.85.129
 
 USER root
 
@@ -111,7 +115,7 @@ RUN ( \
     echo 'stderr_logfile=/var/www/MISP/app/tmp/logs/misp-workers-errors.log'; \
     echo 'stdout_logfile=/var/www/MISP/app/tmp/logs/misp-workers.log'; \
     echo 'user=www-data'; \
-    ) > /etc/supervisor/conf.d/supervisord.conf
+    ) > /etc/supervisor/conf.d/misp-workers.conf
 
 
 RUN service supervisor stop
@@ -127,8 +131,8 @@ EXPOSE 443
 EXPOSE 3306
 EXPOSE 6666
 
-RUN /var/www/MISP/app/Console/cake Admin setSetting "MISP.python_bin" "/var/www/MISP/venv/bin/python"
-RUN /var/www/MISP/app/Console/cake live 1
+#RUN /var/www/MISP/app/Console/cake Admin setSetting "MISP.python_bin" "/var/www/MISP/venv/bin/python"
+#RUN /var/www/MISP/app/Console/cake live 1
 RUN chown www-data:www-data /var/www/MISP/app/Config/config.php*
 
 ENTRYPOINT ["/bin/bash"]
