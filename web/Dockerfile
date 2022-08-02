@@ -31,10 +31,10 @@ USER root
 
 RUN apt -y install supervisor
 
-RUN sudo -u www-data php /var/www/MISP/app/composer.phar require --with-all-dependencies supervisorphp/supervisor \
-    guzzlehttp/guzzle \
-    php-http/message \
-    lstrojny/fxmlrpc
+#RUN sudo -u www-data php /var/www/MISP/app/composer.phar require --with-all-dependencies supervisorphp/supervisor \
+#    guzzlehttp/guzzle \
+#    php-http/message \
+#    lstrojny/fxmlrpc
 
 RUN ( \
     echo ''; \
