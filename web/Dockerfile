@@ -9,9 +9,10 @@ RUN apt update && \
     apt install -y software-properties-common && \
     apt install -y mysql-server sudo wget curl gcc git gnupg-agent locales
 
-RUN locale-gen en_US.UTF-8 && \
-    echo 'LANG="en_US.UTF-8"' > /etc/default/locale
-ENV LANG en_US.UTF-8
+RUN apt install -y language-pack-en-base && \
+    locale-gen en_US.UTF-8
+    export LANG=en_US.UTF-8
+    export LC_ALL=en_US.UTF-8
 
 RUN useradd misp && usermod -aG sudo misp
 
