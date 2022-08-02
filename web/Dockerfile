@@ -7,7 +7,7 @@ ENV DEBIAN_FRONTEND noninteractive
 RUN apt update && \
     apt upgrade -y && \
     apt install -y software-properties-common && \
-    apt install -y mysql-server sudo wget curl gcc git gnupg-agent locales
+    apt install -y mysql-server sudo wget curl gcc git gnupg-agent locales tzdata
 
 RUN apt install -y language-pack-en-base && \
     locale-gen en_US.UTF-8
