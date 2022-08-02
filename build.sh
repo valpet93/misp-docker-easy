@@ -6,4 +6,4 @@ docker build \
     --build-arg MISP_FQDN=localhost \
     --build-arg MISP_EMAIL=admin@localhost \
     --build-arg MISP_GPG_PASSWORD=ChangeThisDefaultPasswordXuJBao5Q2bps89LWFqWkKgDZwAFpNHvc \
-    -t harvarditsecurity/misp container
+    -t harvarditsecurity/misp web
