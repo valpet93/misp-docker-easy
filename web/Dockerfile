@@ -9,6 +9,8 @@ RUN apt update && \
     apt install -y software-properties-common && \
     apt install -y mysql-server sudo wget curl gcc git gnupg-agent
 
+USER root
+
 RUN locale-gen en_US.UTF-8 && \
     echo 'LANG="en_US.UTF-8"' > /etc/default/locale
 ENV LANG en_US.UTF-8
