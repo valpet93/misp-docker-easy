@@ -126,10 +126,7 @@ WORKDIR /var/www/MISP
 RUN tar czpf /root/MISP.tgz .
 
 VOLUME /var/www/MISP
-EXPOSE 80
-EXPOSE 443
-EXPOSE 3306
-EXPOSE 6666
+EXPOSE 80 443 3306 6666
 
 #RUN /var/www/MISP/app/Console/cake Admin setSetting "MISP.python_bin" "/var/www/MISP/venv/bin/python"
 #RUN /var/www/MISP/app/Console/cake live 1
