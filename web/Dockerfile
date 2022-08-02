@@ -7,9 +7,7 @@ ENV DEBIAN_FRONTEND noninteractive
 RUN apt update && \
     apt upgrade -y && \
     apt install -y software-properties-common && \
-    apt install -y mysql-server sudo wget curl gcc git gnupg-agent
-
-USER root
+    apt install -y mysql-server sudo wget curl gcc git gnupg-agent locales
 
 RUN locale-gen en_US.UTF-8 && \
     echo 'LANG="en_US.UTF-8"' > /etc/default/locale
