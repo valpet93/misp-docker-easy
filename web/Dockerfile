@@ -6,11 +6,13 @@ ENV DEBIAN_FRONTEND noninteractive
 
 VOLUME /var/lib/mysql
 
-RUN apt update && \
-    apt upgrade -y && \
-    apt install -y software-properties-common && \
-    apt install -y mysql-server sudo wget curl gcc git gnupg-agent locales tzdata cron logrotate syslog-ng-core postfix make python3 openssl redis-server vim zip sqlite3 moreutils apache2 apache2-doc apache2-utils libapache2-mod-php php php-cli php-gnupg php-dev php-json php-mysql php8.1-opcache php-readline php-redis php-xml php-mbstring rng-tools python3-dev python3-pip python3-yara python3-redis python3-zmq libxml2-dev libxslt1-dev zlib1g-dev python3-setuptools libpq5 libjpeg-dev libfuzzy-dev ruby asciidoctor tesseract-ocr imagemagick libpoppler-cpp-dev virtualenv libopencv-dev zbar-tools libzbar0 libzbar-dev build-essential
-
+RUN apt-get update && \
+    apt-get dist-upgrade -y && apt-get upgrade && apt-get autoremove -y && apt-get clean && \
+    apt-get install -y software-properties-common && \
+    apt-get install -y postfix && \
+    apt-get install -y mysql-client curl gcc git gnupg-agent \
+    make openssl redis-server sudo vim zip locales wget iproute2 cron
+    
 ARG POSTFIX_RELAY_HOST=localhost
 
 RUN postconf -e "relayhost = $POSTFIX_RELAY_HOST"
