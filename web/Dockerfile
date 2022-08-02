@@ -115,7 +115,7 @@ RUN ( \
     echo 'stderr_logfile=/var/www/MISP/app/tmp/logs/misp-workers-errors.log'; \
     echo 'stdout_logfile=/var/www/MISP/app/tmp/logs/misp-workers.log'; \
     echo 'user=www-data'; \
-    ) > /etc/supervisor/conf.d/misp-workers.conf
+    ) >> /etc/supervisor/conf.d/misp-workers.conf
 
 
 RUN service supervisor stop
@@ -132,4 +132,4 @@ EXPOSE 80 443 3306 6666
 #RUN /var/www/MISP/app/Console/cake live 1
 RUN chown www-data:www-data /var/www/MISP/app/Config/config.php*
 
-ENTRYPOINT ["/bin/bash"]
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
