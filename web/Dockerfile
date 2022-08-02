@@ -1,6 +1,9 @@
 
 FROM ubuntu:latest
 
+
+ENV TZ=Europe/Roma \
+    DEBIAN_FRONTEND=noninteractive
 # Install core components
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -11,7 +14,7 @@ RUN apt-get update && \
     apt-get install -y software-properties-common && \
     apt-get install -y postfix && \
     apt-get install -y mysql-client curl gcc git gnupg-agent \
-    make openssl redis-server sudo vim zip locales wget iproute2 cron
+    make openssl redis-server sudo vim zip locales wget iproute2 cron tzdata
     
 ARG POSTFIX_RELAY_HOST=localhost
 
