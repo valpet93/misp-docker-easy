@@ -413,7 +413,7 @@ checkInstaller () {
   # Workaround: shasum is not available on RHEL, only checking sha512
   if [[ "${FLAVOUR}" == "rhel" ]] || [[ "${FLAVOUR}" == "centos" ]]; then
   INSTsum=$(sha512sum ${0} | cut -f1 -d\ )
-  chsum=$(cat INSTALL_NODB.sh.sha512)
+  chsum=$(cat INSTALL.sh.sha512)
   if [[ "${chsum}" == "${INSTsum}" ]]; then
     echo "SHA512 matches"
   else
@@ -430,7 +430,7 @@ checkInstaller () {
     SHA_SUMS="--sha1 --sha256 --sha384 --sha512"
     for sum in $(echo ${SHA_SUMS} |sed 's/--sha//g'); do
       INSTsum=$(shasum -a ${sum} ${0} | cut -f1 -d\ )
-      chsum=$(cat INSTALL_NODB.sh.sha${sum} | cut -f1 -d\ )
+      chsum=$(cat INSTALL.sh.sha${sum} | cut -f1 -d\ )
 
       if [[ "${chsum}" == "${INSTsum}" ]]; then
         echo "sha${sum} matches"
