@@ -23,7 +23,7 @@ RUN apt install -y language-pack-en-base && \
 ENV LANG=en_US.UTF-8
 ENV LC_ALL=en_US.UTF-8
 
-RUN useradd www-data && usermod -aG sudo www-data
+RUN usermod -aG sudo www-data
 
 # Install script
 COPY --chown=www-data:www-data INSTALL.sh* ./
