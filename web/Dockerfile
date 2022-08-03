@@ -38,7 +38,7 @@ ARG MISP_FQDN=localhost
 ARG MISP_ADMIN_PASSWORD=Ciao1234567890
 
 WORKDIR /var/www/
-RUN MISP/app/Console/cake Admin setSetting MISP.baseurl $MISP_FQDN
+RUN MISP/app/Console/cake Admin setSetting MISP.baseurl $MISP_FQDN && \
     MISP/app/Console/cake User change_pw admin@admin.test $MISP_ADMIN_PASSWORD [--no_password_change]
 
 USER root
