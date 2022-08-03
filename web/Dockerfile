@@ -16,10 +16,7 @@ RUN apt-get update && \
     apt-get install -y postfix && \
     apt-get install -y mysql-client curl gcc git gnupg-agent \
     make openssl redis-server sudo vim zip locales wget iproute2 cron tzdata
-    
-ARG POSTFIX_RELAY_HOST=localhost
 
-RUN postconf -e "relayhost = $POSTFIX_RELAY_HOST"
 
 RUN apt install -y language-pack-en-base && \
     locale-gen en_US.UTF-8
