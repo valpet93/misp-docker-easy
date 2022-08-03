@@ -23,23 +23,20 @@ RUN apt install -y language-pack-en-base && \
 ENV LANG=en_US.UTF-8
 ENV LC_ALL=en_US.UTF-8
 
-RUN useradd misp && usermod -aG sudo misp
+RUN useradd www-data && usermod -aG sudo www-data
 
 # Install script
-COPY --chown=misp:misp INSTALL.sh* ./
+COPY --chown=www-data:www-data INSTALL.sh* ./
 RUN chmod +x INSTALL.sh
 RUN echo "ALL ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
-USER misp
+USER www-data
 
 RUN bash INSTALL.sh -A -u
 
-ARG MISP_FQDN=localhost
-ARG MISP_ADMIN_PASSWORD=Ciao1234567890
-
 WORKDIR /var/www/
-RUN MISP/app/Console/cake Admin setSetting MISP.baseurl $MISP_FQDN && \
-    MISP/app/Console/cake User change_pw admin@admin.test $MISP_ADMIN_PASSWORD
+RUN MISP/app/Console/cake Admin setSetting MISP.baseurl localhost && \
+    MISP/app/Console/cake User change_pw admin@admin.test admin
 
 USER root
 
