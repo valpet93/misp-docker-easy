@@ -32,7 +32,7 @@ RUN echo "ALL ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
 USER misp
 
-RUN RUN bash INSTALL.sh -A -u
+RUN bash INSTALL.sh -A -u
 
 ARG MISP_FQDN=localhost
 ARG MISP_ADMIN_PASSWORD=Ciao1234567890
