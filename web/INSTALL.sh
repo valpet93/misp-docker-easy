@@ -1007,7 +1007,7 @@ enableServices () {
     sudo service apache2 start
 ###    sudo systemctl enable --now  redis-server
     sudo service redis-server start
-###}
+}
 
 # TODO: check if this makes sense
 # Generate rc.local
