@@ -32,7 +32,8 @@ RUN echo "ALL ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
 USER misp
 
-RUN bash INSTALL.sh -A -u
+RUN wget --no-cache -O /tmp/INSTALL.sh https://raw.githubusercontent.com/MISP/MISP/2.4/INSTALL/INSTALL.sh ; \
+    bash /tmp/INSTALL.sh -c -M
 
 ARG MISP_FQDN=localhost
 ARG MISP_ADMIN_PASSWORD=Ciao1234567890
