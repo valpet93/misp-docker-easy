@@ -32,12 +32,7 @@ RUN echo "ALL ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
 USER misp
 
-RUN wget --no-cache --no-check-certificate -O /tmp/INSTALL.sh https://raw.githubusercontent.com/MISP/MISP/2.4/INSTALL/INSTALL.sh ; \
-    wget --no-cache --no-check-certificate -O /tmp/INSTALL.sh.sha1 https://raw.githubusercontent.com/MISP/MISP/2.4/INSTALL/INSTALL.sh.sha1 ; \
-    wget --no-cache --no-check-certificate -O /tmp/INSTALL.sh.sha256 https://raw.githubusercontent.com/MISP/MISP/2.4/INSTALL/INSTALL.sh.sha256 ; \
-    wget --no-cache --no-check-certificate -O /tmp/INSTALL.sh.sha384 https://raw.githubusercontent.com/MISP/MISP/2.4/INSTALL/INSTALL.sh.sha384 ; \
-    wget --no-cache --no-check-certificate -O /tmp/INSTALL.sh.sha512 https://raw.githubusercontent.com/MISP/MISP/2.4/INSTALL/INSTALL.sh.sha512 ; \
-    bash /tmp/INSTALL.sh -c -M
+RUN RUN bash INSTALL.sh -A -u
 
 ARG MISP_FQDN=localhost
 ARG MISP_ADMIN_PASSWORD=Ciao1234567890
