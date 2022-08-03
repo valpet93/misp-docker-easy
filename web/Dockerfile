@@ -24,14 +24,14 @@ RUN apt install -y language-pack-en-base && \
 ENV LANG=en_US.UTF-8
 ENV LC_ALL=en_US.UTF-8
 
-RUN usermod -aG sudo www-data
+RUN useradd misp && usermod -aG sudo misp
 
 # Install script
-COPY --chown=www-data:www-data INSTALL.sh* ./
+COPY --chown=misp:misp INSTALL.sh* ./
 RUN chmod +x INSTALL.sh
 RUN echo "ALL ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
-USER www-data
+USER misp
 
 RUN bash INSTALL.sh -A -u
 
