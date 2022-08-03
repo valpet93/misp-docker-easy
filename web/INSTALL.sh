@@ -1867,9 +1867,9 @@ mispmodules () {
 
   # Start misp-modules as a service
   sudo cp /usr/local/src/misp-modules/etc/systemd/system/misp-modules.service /etc/systemd/system/
-  ###sudo systemctl daemon-reload
-  ###sudo systemctl enable --now misp-modules
-  sudo service misp-modules start
+  sudo systemctl daemon-reload
+  sudo systemctl enable --now misp-modules
+  ###sudo service misp-modules start
 
   # Sleep 9 seconds to give misp-modules a chance to spawn
   sleep 9
