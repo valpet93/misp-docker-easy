@@ -1,9 +1,6 @@
 #!/bin/bash
 docker build \
     --rm=true --force-rm=true \
-    --build-arg MYSQL_MISP_PASSWORD=ChangeThisDefaultPassworda9564ebc3289b7a14551baf8ad5ec60a \
-    --build-arg POSTFIX_RELAY_HOST=localhost \
     --build-arg MISP_FQDN=localhost \
-    --build-arg MISP_EMAIL=admin@localhost \
-    --build-arg MISP_GPG_PASSWORD=ChangeThisDefaultPasswordXuJBao5Q2bps89LWFqWkKgDZwAFpNHvc \
+    --build-arg MISP_ADMIN_PASSWORD=Ciao1234567890 \
     -t prova/misp web
