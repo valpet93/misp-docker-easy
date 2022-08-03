@@ -411,10 +411,9 @@ EOF
 
 checkInstaller () {
   # Workaround: shasum is not available on RHEL, only checking sha512
-  if [[ "${FLAVOUR}" == "rhel" ]] || [[ "${FLAVOUR}" == "centos" ]] || [[ "${FLAVOUR}" == "fedora" ]]; then
+  if [[ "${FLAVOUR}" == "rhel" ]] || [[ "${FLAVOUR}" == "centos" ]]; then
   INSTsum=$(sha512sum ${0} | cut -f1 -d\ )
-  /usr/bin/wget --no-cache -q -O /tmp/INSTALL.sh.sha512 https://raw.githubusercontent.com/MISP/MISP/2.4/INSTALL/INSTALL.sh.sha512
-        chsum=$(cat /tmp/INSTALL.sh.sha512)
+  chsum=$(cat INSTALL_NODB.sh.sha512)
   if [[ "${chsum}" == "${INSTsum}" ]]; then
     echo "SHA512 matches"
   else
@@ -443,6 +442,7 @@ checkInstaller () {
     done
   fi
 }
+
 
 # Extract manufacturer
 checkManufacturer () {
