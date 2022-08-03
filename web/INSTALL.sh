@@ -1000,11 +1000,14 @@ alias composer73=composer
 # TODO: this is probably a useless function
 # Enable various core services
 enableServices () {
-    sudo systemctl daemon-reload
-    sudo systemctl enable --now  mysql
-    sudo systemctl enable --now  apache2
-    sudo systemctl enable --now  redis-server
-}
+###    sudo systemctl daemon-reload
+###    sudo systemctl enable --now  mysql
+    sudo service mysql start
+###    sudo systemctl enable --now  apache2
+    sudo service apache2 start
+###    sudo systemctl enable --now  redis-server
+    sudo service redis-server start
+###}
 
 # TODO: check if this makes sense
 # Generate rc.local
@@ -1321,13 +1324,17 @@ apacheConfig () {
   sudo a2ensite default-ssl
 
   # Apply all changes
-  sudo systemctl restart apache2
+  ###sudo systemctl restart apache2
+  sudo service apache2 stop
+  sudo service apache2 start
   # activate new vhost
   sudo a2dissite default-ssl
   sudo a2ensite misp-ssl
 
   # Restart apache
-  sudo systemctl restart apache2
+  ###sudo systemctl restart apache2
+  sudo service apache2 stop
+  sudo service apache2 start
 }
 
 installCore () {
@@ -1807,8 +1814,9 @@ RestartSec=10
 [Install]
 WantedBy=multi-user.target" | sudo tee /etc/systemd/system/misp-workers.service
 
-  sudo systemctl daemon-reload
-  sudo systemctl enable --now misp-workers
+  ###sudo systemctl daemon-reload
+  ###sudo systemctl enable --now misp-workers
+  sudo service misp-workers start
 
   # Add the following lines before the last line (exit 0). Make sure that you replace www-data with your apache user:
   sudo sed -i -e '$i \echo never > /sys/kernel/mm/transparent_hugepage/enabled\n' /etc/rc.local
@@ -1860,8 +1868,9 @@ mispmodules () {
 
   # Start misp-modules as a service
   sudo cp /usr/local/src/misp-modules/etc/systemd/system/misp-modules.service /etc/systemd/system/
-  sudo systemctl daemon-reload
-  sudo systemctl enable --now misp-modules
+  ###sudo systemctl daemon-reload
+  ###sudo systemctl enable --now misp-modules
+  sudo service misp-modules start
 
   # Sleep 9 seconds to give misp-modules a chance to spawn
   sleep 9
@@ -1991,7 +2000,9 @@ mispDashboard () {
 
   # Enable misp-dashboard in apache and reload
   sudo a2ensite misp-dashboard
-  sudo systemctl restart apache2
+  ###sudo systemctl restart apache2
+  sudo service apache2 stop
+  sudo service apache2 start
 
   # Needs to be started after apache2 is reloaded so the port status check works
   $SUDO_WWW bash /var/www/misp-dashboard/start_all.sh
@@ -2203,7 +2214,8 @@ yumInstallCoreDeps7 () {
                    libxslt-devel zlib-devel ssdeep-devel -y
 
   # Enable and start redis
-  sudo systemctl enable --now redis.service
+  ###sudo systemctl enable --now redis.service
+  sudo service redis start
 
   # Install MariaDB
   sudo dnf install wget -y
@@ -2229,7 +2241,8 @@ yumInstallCoreDeps7 () {
   # Python 3.6 is now available in RHEL 7.7 base
   sudo dnf install python3 python3-devel python3-virtualenv -y
 
-  sudo systemctl enable --now php-fpm.service
+  ###sudo systemctl enable --now php-fpm.service
+  sudo service php-fpm start
 }
 
 yumInstallCoreDeps8 () {
@@ -2253,7 +2266,8 @@ yumInstallCoreDeps8 () {
   readlink -f /usr/bin/python | grep python3 || sudo alternatives --set python /usr/bin/python3
 
   # Enable and start redis
-  sudo systemctl enable --now redis.service
+  ###sudo systemctl enable --now redis.service
+  sudo service redis start
 
   # Install PHP 7.4 from Remi's repo, see https://rpms.remirepo.net/enterprise/8/php74/x86_64/repoview/
   sudo dnf install php php-fpm php-devel \
@@ -2271,14 +2285,16 @@ yumInstallCoreDeps8 () {
   # cake has php baked in, thus we link to it if necessary.
   [[ ! -e "/usr/bin/php" ]] && sudo ln -s /usr/bin/php74 /usr/bin/php
 
-  sudo systemctl enable --now php-fpm.service
+  ###sudo systemctl enable --now php-fpm.service
+  sudo service php-fpm start
 }
 
 installEntropyRHEL () {
   # GPG needs lots of entropy, haveged provides entropy
   # /!\ Only do this if you're not running rngd to provide randomness and your kernel randomness is not sufficient.
   sudo dnf install haveged -y
-  sudo systemctl enable --now haveged.service
+  ###sudo systemctl enable --now haveged.service
+  sudo service haveged start
 }
 
 installCoreRHEL7 () {
@@ -2350,7 +2366,9 @@ installCoreRHEL7 () {
   sudo sed -i.org -e 's/^;\(clear_env = no\)/\1/' ${PHP_BASE}/php-fpm.d/www.conf
   sudo sed -i.org -e 's/^\(listen =\) \/run\/php-fpm\/www\.sock/\1 127.0.0.1:9000/' ${PHP_BASE}/php-fpm.d/www.conf
 
-  sudo systemctl restart php-fpm.service
+  ###sudo systemctl restart php-fpm.service
+  sudo service php-fpm stop
+  sudo service php-fpm start
   umask $UMASK
 }
 
@@ -2470,7 +2488,9 @@ installCoreRHEL8 () {
 
   umask $UMASK
 
-  sudo systemctl restart php-fpm.service
+  ###sudo systemctl restart php-fpm.service
+  sudo service php-fpm stop
+  sudo service php-fpm start
 }
 
 installCake_RHEL ()
@@ -2483,8 +2503,10 @@ installCake_RHEL ()
 
   sudo dnf install php-pecl-redis php-pecl-ssdeep php-pecl-gnupg -y
 
-  sudo systemctl restart php-fpm.service
-
+  ###sudo systemctl restart php-fpm.service
+  sudo service php-fpm stop
+  sudo service php-fpm start
+  
   # If you have not yet set a timezone in php.ini
   echo 'date.timezone = "Asia/Tokyo"' |sudo tee /etc/php-fpm.d/timezone.ini
   sudo ln -s ../php-fpm.d/timezone.ini /etc/php.d/99-timezone.ini
@@ -2500,7 +2522,9 @@ installCake_RHEL ()
   done
   sudo sed -i "s/^\(session.sid_length\).*/\1 = $(eval echo \${session0sid_length})/" $PHP_INI
   sudo sed -i "s/^\(session.use_strict_mode\).*/\1 = $(eval echo \${session0use_strict_mode})/" $PHP_INI
-  sudo systemctl restart php-fpm.service
+  ###sudo systemctl restart php-fpm.service
+  sudo service php-fpm stop
+  sudo service php-fpm start
 
   # To use the scheduler worker for scheduled tasks, do the following:
   sudo cp -fa $PATH_TO_MISP/INSTALL/setup/config.php $PATH_TO_MISP/app/Plugin/CakeResque/Config/config.php
@@ -2508,10 +2532,13 @@ installCake_RHEL ()
 
 prepareDB_RHEL () {
   # Enable, start and secure your mysql database server
-  sudo systemctl enable --now mariadb.service
+  ###sudo systemctl enable --now mariadb.service
+  sudo service mariadb start
   echo [mysqld] |sudo tee /etc/my.cnf.d/bind-address.cnf
   echo bind-address=127.0.0.1 |sudo tee -a /etc/my.cnf.d/bind-address.cnf
-  sudo systemctl restart mariadb
+  ###sudo systemctl restart mariadb
+  sudo service mariadb stop
+  sudo service mariadb start
 
   # Kill the anonymous users
   sudo mysql -h $DBHOST -e "DROP USER IF EXISTS ''@'localhost'"
@@ -2559,7 +2586,9 @@ apacheConfig_RHEL7 () {
   sudo ln -s /etc/pki/tls/certs/misp.local.csr /etc/pki/tls/certs/misp-chain.crt
   cat /etc/pki/tls/certs/dhparam.pem |sudo tee -a /etc/pki/tls/certs/misp.local.crt
 
-  sudo systemctl restart httpd.service
+  ###sudo systemctl restart httpd.service
+  sudo service httpd stop
+  sudo service httpd start
 
   # Since SELinux is enabled, we need to allow httpd to write to certain directories
   sudo chcon -t httpd_sys_rw_content_t $PATH_TO_MISP/app/files
@@ -2607,7 +2636,10 @@ apacheConfig_RHEL8 () {
   sudo ln -s /etc/pki/tls/certs/misp.local.csr /etc/pki/tls/certs/misp-chain.crt
   cat /etc/pki/tls/certs/dhparam.pem |sudo tee -a /etc/pki/tls/certs/misp.local.crt
 
-  sudo systemctl restart httpd.service
+  ###sudo systemctl restart httpd.service
+  sudo service httpd stop
+  sudo service httpd start
+  
 
   # Since SELinux is enabled, we need to allow httpd to write to certain directories
   sudo chcon -t httpd_sys_rw_content_t $PATH_TO_MISP/app/files
@@ -2640,7 +2672,8 @@ firewall_RHEL () {
   sudo setsebool -P httpd_can_sendmail on
 
   # Enable and start the httpd service
-  sudo systemctl enable --now httpd.service
+  ###sudo systemctl enable --now httpd.service
+  sudo service httpd start
 
   # Open a hole in the iptables firewall
   sudo firewall-cmd --zone=public --add-port=80/tcp --permanent
@@ -2816,9 +2849,10 @@ configWorkersRHEL () {
   WantedBy=multi-user.target" |sudo tee /etc/systemd/system/misp-workers.service
 
   sudo chmod +x $PATH_TO_MISP/app/Console/worker/start.sh
-  sudo systemctl daemon-reload
+  ###sudo systemctl daemon-reload
 
-  sudo systemctl enable --now misp-workers.service
+  ###sudo systemctl enable --now misp-workers.service
+  sudo service misp-workers start
 }
 
 mispmodulesRHEL () {
@@ -2859,10 +2893,11 @@ mispmodulesRHEL () {
   [Install]
   WantedBy=multi-user.target" |sudo tee /etc/systemd/system/misp-modules.service
 
-  sudo systemctl daemon-reload
+  ###sudo systemctl daemon-reload
   # Test misp-modules
   ${SUDO_WWW} ${PATH_TO_MISP}/venv/bin/misp-modules -l 127.0.0.1 -s &
-  sudo systemctl enable --now misp-modules
+  ###sudo systemctl enable --now misp-modules
+  sudo service misp-modules start
 }
 
 
@@ -3197,7 +3232,9 @@ installMISPonKali () {
   sudo a2ensite default-ssl
 
   debug "Restarting mysql.service"
-  sudo systemctl restart mysql.service
+  ###sudo systemctl restart mysql.service
+  sudo service mysql stop
+  sudo service mysql start
 
   debug "git clone, submodule update everything"
   sudo mkdir ${PATH_TO_MISP}
@@ -3350,7 +3387,9 @@ installMISPonKali () {
   done
 
   debug "Restarting Apache2"
-  sudo systemctl restart apache2
+  ###sudo systemctl restart apache2
+  sudo service apache2 stop
+  sudo service apache2 start
 
   debug "Setting up logrotate"
   sudo cp ${PATH_TO_MISP}/INSTALL/misp.logrotate /etc/logrotate.d/misp
@@ -3486,7 +3525,8 @@ installMISPRHEL () {
 
     debug "Enabling Haveged for additional entropy"
     sudo yum install haveged -y
-    sudo systemctl enable --now haveged.service
+    ###sudo systemctl enable --now haveged.service
+    sudo service haveged start
 
 
     debug "Setting up firewall"
