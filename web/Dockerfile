@@ -17,6 +17,7 @@ RUN apt-get update && \
     apt-get install -y mysql-client curl gcc git gnupg-agent \
     make openssl redis-server sudo vim zip locales wget iproute2 cron tzdata
 
+RUN apt install systemd
 
 RUN apt install -y language-pack-en-base && \
     locale-gen en_US.UTF-8
