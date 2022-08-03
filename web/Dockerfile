@@ -1,9 +1,10 @@
 
-FROM ubuntu:latest
+FROM ubuntu:focal
 
 
 ENV TZ=Europe/Roma \
     DEBIAN_FRONTEND=noninteractive
+
 # Install core components
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -37,23 +38,17 @@ USER misp
 RUN bash INSTALL.sh -A -u
 
 ARG MISP_FQDN=localhost
-ARG MISP_EMAIL=admin@localhost
+ARG MISP_ADMIN_PASSWORD=Ciao1234567890
 
-RUN echo "ServerName $MISP_FQDN" >> /etc/apache2/sites-available/000-default.conf ; \
-    echo "Redirect permanent / https://$MISP_FQDN" >> /etc/apache2/sites-available/000-default.conf ; \
-    echo "ServerAdmin $MISP_EMAIL" >> /etc/apache2/sites-available/default-ssl.conf ; \
-    echo "ServerName $MISP_FQDN" >> /etc/apache2/sites-available/default-ssl.conf
-    
-ARG MYSQL_MISP_PASSWORD=ChangeThisDefaultPassworda9564ebc3289b7a14551baf8ad5ec60a
-ARG MISP_GPG_PASSWORD=ChangeThisDefaultPasswordXuJBao5Q2bps89LWFqWkKgDZwAFpNHvc
-
-RUN echo "Name-Email: $MISP_EMAIL" >> /tmp/config_gpg ; \
-    echo "Passphrase: $MISP_GPG_PASSWORD" >> /tmp/config_gpg ; \
-    udo -u www-data sh -c "gpg --homedir /var/www/MISP/.gnupg --export --armor $MISP_EMAIL > /var/www/MISP/app/webroot/gpg.asc"
+WORKDIR /var/www/
+RUN MISP/app/Console/cake Admin setSetting MISP.baseurl $MISP_FQDN
+    MISP/app/Console/cake User change_pw admin@admin.test $MISP_ADMIN_PASSWORD [--no_password_change]
 
 USER root
 
 # Supervisord Setup
+
+WORKDIR /
 
 RUN apt -y install supervisor
 
@@ -150,8 +145,8 @@ RUN tar czpf /root/MISP.tgz .
 VOLUME /var/www/MISP
 EXPOSE 80 443 3306 6666
 
-#RUN /var/www/MISP/app/Console/cake Admin setSetting "MISP.python_bin" "/var/www/MISP/venv/bin/python"
-#RUN /var/www/MISP/app/Console/cake live 1
-RUN chown www-data:www-data /var/www/MISP/app/Config/config.php*
+RUN app/Console/cake Admin setSetting "MISP.python_bin" "/var/www/MISP/venv/bin/python"
+RUN app/Console/cake live 1
+RUN chown www-data:www-data app/Config/config.php*
 
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
